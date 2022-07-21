@@ -29,7 +29,7 @@ type ExtendLogger struct {
 
 func NewExtendLogger(out io.Writer) *ExtendLogger {
 	return &ExtendLogger{
-		Logger:   log.New(out, "", log.LstdFlags),
+		Logger:   log.New(out, "", 0),
 		logLevel: LogLevelError,
 	}
 }
@@ -47,4 +47,16 @@ func (l *ExtendLogger) println(srcLogLvl LogLevel, prefix, msg string) {
 	}
 
 	l.Logger.Println(prefix + msg)
+}
+
+func (l *ExtendLogger) Infoln(msg string) {
+	l.println(LogLevelInfo, "[*] INFO ", msg)
+}
+
+func (l *ExtendLogger) Warnln(msg string) {
+	l.println(LogLevelWarning, "[*] WARNING ", msg)
+}
+
+func (l *ExtendLogger) Errorln(msg string) {
+	l.println(LogLevelError, "[*] ERROR ", msg)
 }
