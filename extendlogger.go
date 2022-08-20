@@ -1,36 +1,14 @@
 package extendlogger
 
-import (
-	"io"
-	"log"
-)
-
-const (
-	LogLevelInfo LogLevel = iota
-	LogLevelWarning
-	LogLevelError
-)
-
-type LogLevel int
-
-func (l LogLevel) IsValid() bool {
-	switch l {
-	case LogLevelInfo, LogLevelWarning, LogLevelError:
-		return true
-	default:
-		return false
-	}
-}
-
 type ExtendLogger struct {
-	*log.Logger
+	Logger   *LogWriter
 	logLevel LogLevel
 }
 
-func NewExtendLogger(out io.Writer) *ExtendLogger {
+func NewExtendLogger() *ExtendLogger {
 	return &ExtendLogger{
-		Logger:   log.New(out, "", 0),
-		logLevel: LogLevelError,
+		Logger:   logWriter,
+		logLevel: LogLevelInfo,
 	}
 }
 
@@ -41,22 +19,18 @@ func (l *ExtendLogger) SetLogLevel(logLvl LogLevel) {
 	l.logLevel = logLvl
 }
 
-func (l *ExtendLogger) println(srcLogLvl LogLevel, prefix, msg string) {
-	if l.logLevel < srcLogLvl {
-		return
-	}
-
-	l.Logger.Println(prefix + msg)
+func (l *ExtendLogger) println(lvl LogLevel, prefix, msg string) {
+	l.Logger.Log(NewLogMsg(lvl, prefix, msg))
 }
 
-func (l *ExtendLogger) Infoln(msg string) {
-	l.println(LogLevelInfo, "[*] INFO ", msg)
+func (l *ExtendLogger) Info(msg string) {
+	l.println(LogLevelInfo, "[i] INFO", msg)
 }
 
-func (l *ExtendLogger) Warnln(msg string) {
-	l.println(LogLevelWarning, "[*] WARNING ", msg)
+func (l *ExtendLogger) Warn(msg string) {
+	l.println(LogLevelWarning, "[!] WARNING", msg)
 }
 
-func (l *ExtendLogger) Errorln(msg string) {
-	l.println(LogLevelError, "[*] ERROR ", msg)
+func (l *ExtendLogger) Error(msg string) {
+	l.println(LogLevelError, "[X] ERROR", msg)
 }
