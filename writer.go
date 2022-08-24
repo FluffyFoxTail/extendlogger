@@ -45,9 +45,21 @@ func (bw *BaseWriter) FormatMsg(log *Log) string {
 		log.Prefix = fmt.Sprintf("\x1b[31m%s\x1b[0m", log.Prefix)
 	}
 
-	return fmt.Sprintf("%s %s \n[**] %s\n",
+	if (log.Location == &EventLocation{}) {
+		return fmt.Sprintf("%s %s, place of exec func not found ¯ \\ _ (ツ) _ / ¯\n[**] %s\n",
+
+			log.Prefix,
+			log.Time,
+			log.Message,
+		)
+	}
+
+	return fmt.Sprintf("%s %s on %s line: %d, func: %s\n[**] %s\n",
 		log.Prefix,
 		fmt.Sprintf("\x1b[%dm%s\x1b[0m", 34, log.Time),
+		log.Location.File,
+		log.Location.Line,
+		fmt.Sprintf("\x1b[%dm%s\x1b[0m", 35, log.Location.PC),
 		log.Message,
 	)
 }
