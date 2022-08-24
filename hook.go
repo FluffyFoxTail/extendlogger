@@ -26,3 +26,8 @@ func (lw *LogWriter) Log(log *Log) {
 		ow.Write(log)
 	}
 }
+
+func AddWriter(newWriter OutputWriter) {
+	newWriter.Init()
+	logWriter.writers = append(logWriter.writers, newWriter)
+}
